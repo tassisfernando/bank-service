@@ -51,15 +51,6 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.toResponseList(repository.findByCustomer(customer));
     }
 
-    @Override
-    public AccountResponse findAccountByNumberAndCustomerId(String accountNumber, UUID customerId){
-        log.info("Buscando conta com número {} para o cliente com ID {}", accountNumber, customerId);
-        Customer customer = findCustomerById(customerId);
-        Account account = repository.findByAccountNumberAndCustomer(accountNumber, customer)
-                .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada"));
-        return accountMapper.toResponse(account);
-    }
-
     private Customer findCustomerById(UUID customerId) {
         return customerService.findById(customerId).orElseThrow(() ->
                 new ResourceNotFoundException("Cliente não encontrado"));

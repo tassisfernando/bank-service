@@ -12,5 +12,4 @@ public interface AccountService {
 
     List<AccountResponse> findAccountsByCustomer(UUID customerId);
 
-    AccountResponse findAccountByNumberAndCustomerId(String accountNumber, UUID customerId);
 }
