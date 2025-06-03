@@ -10,3 +10,9 @@ create table if not exists bank.tb_cliente
 alter table if exists bank.tb_cliente drop constraint if exists UKjgra977gi05fur83l225x4qkr;
 
 alter table if exists bank.tb_cliente add constraint UKjgra977gi05fur83l225x4qkr unique (cpf);
+
+alter table if exists bank.tb_cliente alter column cpf set data type varchar (11);
+
+alter table if exists bank.tb_cliente add column password_hash varchar (60) not null;
+
+alter table if exists bank.tb_cliente alter column telefone set data type varchar (15);

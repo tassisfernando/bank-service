@@ -1,5 +1,6 @@
 package br.com.tassisf.bank.controller.exception;
 
+import br.com.tassisf.bank.exception.BusinessException;
 import br.com.tassisf.bank.exception.InvalidCredentialsException;
 import br.com.tassisf.bank.exception.ResourceAlreadyExistsException;
 import br.com.tassisf.bank.exception.ResourceNotFoundException;
@@ -23,6 +24,18 @@ public class GlobalExceptionHandler {
         log.error("Recurso não encontrado: {}", ex.getMessage());
         ErrorResponse error = buildErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorResponse> handleBusinessException(
+            ResourceNotFoundException ex, HttpServletRequest request) {
+        log.error("Regra de negócio violada: {}", ex.getMessage());
+        ErrorResponse error = buildErrorResponse(
+                HttpStatus.UNPROCESSABLE_ENTITY.value(),
                 ex.getMessage(),
                 request.getRequestURI()
         );

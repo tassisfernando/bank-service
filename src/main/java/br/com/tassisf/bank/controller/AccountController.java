@@ -27,7 +27,7 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.CREATED).body(accountResponse);
     }
 
-    @GetMapping("/customers/{customerId}")
+    @GetMapping("/{customerId}")
     public ResponseEntity<List<AccountResponse>> findAccountsByCustomer(@PathVariable UUID customerId) {
         List<AccountResponse> accountResponseList = accountService.findAccountsByCustomer(customerId);
         return ResponseEntity.ok(accountResponseList);

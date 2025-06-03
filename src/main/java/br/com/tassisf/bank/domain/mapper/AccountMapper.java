@@ -20,7 +20,6 @@ public interface AccountMapper {
 
     AccountRequest toRequest(Account account);
 
-    @Mapping(target = "customerId", source = "customer.id")
     AccountResponse toResponse(Account account);
 
     List<AccountResponse> toResponseList(List<Account> accounts);

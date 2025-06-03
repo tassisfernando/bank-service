@@ -11,4 +11,6 @@ public interface AccountService {
     AccountResponse createAccount(AccountRequest accountRequest);
 
     List<AccountResponse> findAccountsByCustomer(UUID customerId);
+
+    AccountResponse findAccountByNumberAndCustomerId(String accountNumber, UUID customerId);
 }

@@ -33,6 +33,6 @@ public class AuthServiceImpl implements AuthService {
 
         log.info("Usuário autenticado com sucesso: {}", user.getCpf());
         String token = jwtService.generateToken(user);
-        return new AuthResponse(token, user.getName());
+        return new AuthResponse(token, user.getName(), user.getId());
     }
 }

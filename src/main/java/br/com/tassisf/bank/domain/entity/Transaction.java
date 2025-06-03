@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -24,6 +25,9 @@ public class Transaction {
     
     @Column(name = "valor", nullable = false, precision = 15, scale = 2)
     private BigDecimal amount;
+
+    @Column(name = "dataHora", nullable = false, columnDefinition = "TIMESTAMP")
+    private LocalDateTime dateTime;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo", nullable = false)

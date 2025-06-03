@@ -29,13 +29,18 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountResponse createAccount(AccountRequest accountRequest) {
-        Customer customer = findCustomerById(accountRequest.customerId());
-        validateAccountNumberNotExists(accountRequest.accountNumber());
-        log.info("Criando nova conta para o cliente: {}", customer.getName());
+        log.info("Criando nova conta para o cliente: {}", accountRequest.customerName());
 
-        Account accountEntity = accountMapper.toEntity(accountRequest);
-        accountEntity.setCustomer(customer);
-        accountEntity.setBalance(BigDecimal.ZERO);
+        String accountNumber = generateAccountNumber(accountRequest);
+        validateAccountNumberNotExists(accountNumber);
+
+        Customer customer = findCustomerById(accountRequest.customerId());
+        Account accountEntity = Account.builder()
+                .balance(BigDecimal.ZERO)
+                .accountNumber(accountNumber)
+                .customer(customer)
+                .build();
+
         return accountMapper.toResponse(repository.save(accountEntity));
     }
 
@@ -44,6 +49,15 @@ public class AccountServiceImpl implements AccountService {
         log.info("Buscando contas do cliente com ID: {}", customerId);
         Customer customer = findCustomerById(customerId);
         return accountMapper.toResponseList(repository.findByCustomer(customer));
+    }
+
+    @Override
+    public AccountResponse findAccountByNumberAndCustomerId(String accountNumber, UUID customerId){
+        log.info("Buscando conta com número {} para o cliente com ID {}", accountNumber, customerId);
+        Customer customer = findCustomerById(customerId);
+        Account account = repository.findByAccountNumberAndCustomer(accountNumber, customer)
+                .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada"));
+        return accountMapper.toResponse(account);
     }
 
     private Customer findCustomerById(UUID customerId) {
@@ -55,5 +69,15 @@ public class AccountServiceImpl implements AccountService {
         if (repository.findByAccountNumber(accountNumber).isPresent()) {
             throw new ResourceAlreadyExistsException("Conta já cadastrada");
         }
+    }
+
+    private String generateAccountNumber(AccountRequest accountRequest) {
+        String initials = accountRequest.customerName()
+                .replaceAll("[^A-Za-z]", "")
+                .toUpperCase()
+                .substring(0, Math.min(2, accountRequest.customerName().length()));
+        int randomNumber = (int) (Math.random() * 1_000_000);
+        String number = String.format("%06d", randomNumber);
+        return initials + "-" + number;
     }
 }
