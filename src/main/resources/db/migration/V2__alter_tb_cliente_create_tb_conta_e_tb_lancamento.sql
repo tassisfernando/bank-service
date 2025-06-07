@@ -1,3 +1,5 @@
+drop table if exists bank.tb_conta;
+
 create table if not exists bank.tb_conta
 (
     id         uuid           not null,
@@ -6,6 +8,8 @@ create table if not exists bank.tb_conta
     id_cliente uuid           not null,
     primary key (id)
 );
+
+drop table if exists bank.tb_lancamento;
 
 create table if not exists bank.tb_lancamento
 (

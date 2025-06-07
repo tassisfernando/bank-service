@@ -6,6 +6,8 @@ import br.com.tassisf.bank.controller.out.CustomerResponse;
 import br.com.tassisf.bank.domain.entity.Customer;
 import br.com.tassisf.bank.domain.mapper.CustomerMapper;
 import br.com.tassisf.bank.exception.ResourceAlreadyExistsException;
+import br.com.tassisf.bank.exception.ResourceNotFoundException;
+import br.com.tassisf.bank.repository.AccountRepository;
 import br.com.tassisf.bank.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository repository;
     private final CustomerMapper customerMapper;
     private final PasswordEncoder passwordEncoder;
+    private final AccountRepository accountRepository;
 
     @Override
     public CustomerResponse createCustomer(CustomerRequest customer) {
@@ -37,9 +40,20 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Optional<Customer> findById(UUID id) {
+    public Optional<Customer> findCustomerEntityById(UUID id) {
         log.info("Buscando cliente com ID: {}", id);
         return repository.findById(id);
+    }
+
+    @Override
+    public CustomerResponse findById(UUID id) {
+        log.info("Buscando cliente com UUID: {}", id);
+        Customer customer = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
+
+        CustomerResponse customerResponse = customerMapper.toResponse(customer);
+        customerResponse.setTotalBalance(accountRepository.getTotalBalanceByCustomerId(id));
+        return customerResponse;
     }
 
     @Override

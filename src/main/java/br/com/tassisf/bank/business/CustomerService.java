@@ -12,7 +12,9 @@ public interface CustomerService {
 
     CustomerResponse createCustomer(CustomerRequest customer);
 
-    Optional<Customer> findById(UUID id);
+    Optional<Customer> findCustomerEntityById(UUID id);
+
+    CustomerResponse findById(UUID id);
 
     List<CustomerResponse> findAll();
 }

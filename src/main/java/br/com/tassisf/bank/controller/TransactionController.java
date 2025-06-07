@@ -4,7 +4,7 @@ import br.com.tassisf.bank.business.TransactionService;
 import br.com.tassisf.bank.controller.in.TransactionRequest;
 import br.com.tassisf.bank.controller.out.StatementResponse;
 import br.com.tassisf.bank.controller.out.TransactionResponse;
-import br.com.tassisf.bank.domain.enums.TransactionType;
+import br.com.tassisf.bank.domain.enums.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,7 @@ public class TransactionController {
                                                        @RequestHeader("X-Customer-Id") String customerIdStr) {
         UUID customerId = UUID.fromString(customerIdStr);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(transactionService.process(request, TransactionType.CREDIT, customerId));
+                .body(transactionService.process(request, Operation.DEPOSIT, customerId));
     }
 
     @PostMapping("/withdraw")
@@ -33,7 +33,15 @@ public class TransactionController {
                                                         @RequestHeader("X-Customer-Id") String customerIdStr) {
         UUID customerId = UUID.fromString(customerIdStr);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(transactionService.process(request, TransactionType.DEBIT, customerId));
+                .body(transactionService.process(request, Operation.WITHDRAW, customerId));
+    }
+
+    @PostMapping("/transfer")
+    public ResponseEntity<TransactionResponse> transfer(@RequestBody TransactionRequest request,
+                                                        @RequestHeader("X-Customer-Id") String customerIdStr) {
+        UUID customerId = UUID.fromString(customerIdStr);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(transactionService.processTransfer(request, customerId));
     }
 
     @GetMapping("/statement/{accountId}")

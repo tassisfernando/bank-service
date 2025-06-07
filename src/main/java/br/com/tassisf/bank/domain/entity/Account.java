@@ -27,6 +27,9 @@ public class Account {
     @Column(name = "saldo", nullable = false, precision = 15, scale = 2)
     private BigDecimal balance;
 
+    @Column(name = "limiteCredito", nullable = false, precision = 15, scale = 2)
+    private BigDecimal creditLimit;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idCliente", referencedColumnName = "id", nullable = false)
     private Customer customer;

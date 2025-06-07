@@ -1,5 +1,6 @@
 package br.com.tassisf.bank.domain.entity;
 
+import br.com.tassisf.bank.domain.enums.Operation;
 import br.com.tassisf.bank.domain.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,7 +34,15 @@ public class Transaction {
     @Column(name = "tipo", nullable = false)
     private TransactionType type;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "operacao", nullable = false)
+    private Operation operation;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idConta", referencedColumnName = "id", nullable = false)
-    private Account account;
+    @JoinColumn(name = "id_conta_origem", referencedColumnName = "id", nullable = false)
+    private Account originAccount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_conta_destino", referencedColumnName = "id")
+    private Account destinationAccount;
 }

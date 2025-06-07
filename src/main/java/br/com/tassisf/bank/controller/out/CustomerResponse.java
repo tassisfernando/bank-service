@@ -1,4 +1,18 @@
 package br.com.tassisf.bank.controller.out;
 
-public record CustomerResponse(String id, String name, String cpf, String telephone) {
+import lombok.*;
+
+import java.math.BigDecimal;
+
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class CustomerResponse {
+
+    private String id;
+    private String name;
+    private String cpf;
+    private String telephone;
+    private BigDecimal totalBalance;
 }

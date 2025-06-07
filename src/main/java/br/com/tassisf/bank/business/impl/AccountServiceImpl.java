@@ -7,6 +7,7 @@ import br.com.tassisf.bank.controller.out.AccountResponse;
 import br.com.tassisf.bank.domain.entity.Account;
 import br.com.tassisf.bank.domain.entity.Customer;
 import br.com.tassisf.bank.domain.mapper.AccountMapper;
+import br.com.tassisf.bank.exception.BusinessException;
 import br.com.tassisf.bank.exception.ResourceAlreadyExistsException;
 import br.com.tassisf.bank.exception.ResourceNotFoundException;
 import br.com.tassisf.bank.repository.AccountRepository;
@@ -37,6 +38,7 @@ public class AccountServiceImpl implements AccountService {
         Customer customer = findCustomerById(accountRequest.customerId());
         Account accountEntity = Account.builder()
                 .balance(BigDecimal.ZERO)
+                .creditLimit(BigDecimal.ZERO)
                 .accountNumber(accountNumber)
                 .customer(customer)
                 .build();
@@ -51,8 +53,23 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.toResponseList(repository.findByCustomer(customer));
     }
 
+    @Override
+    public AccountResponse updateCreditLimit(String accountNumber, BigDecimal newCreditLimit) {
+        log.info("Atualizando limite de crédito da conta: {}", accountNumber);
+        Account account = repository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada"));
+
+        if (newCreditLimit.compareTo(account.getCreditLimit()) < 0) {
+            throw new BusinessException("Novo limite de crédito não pode ser menor que o atual");
+        }
+
+        account.setCreditLimit(newCreditLimit);
+        Account updatedAccount = repository.save(account);
+        return accountMapper.toResponse(updatedAccount);
+    }
+
     private Customer findCustomerById(UUID customerId) {
-        return customerService.findById(customerId).orElseThrow(() ->
+        return customerService.findCustomerEntityById(customerId).orElseThrow(() ->
                 new ResourceNotFoundException("Cliente não encontrado"));
     }
 

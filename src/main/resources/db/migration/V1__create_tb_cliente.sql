@@ -1,3 +1,5 @@
+drop table if exists bank.tb_cliente;
+
 create table if not exists bank.tb_cliente
 (
     id       uuid         not null,

@@ -1,6 +1,15 @@
 package br.com.tassisf.bank.controller.in;
 
+import lombok.*;
+
 import java.math.BigDecimal;
 
-public record TransactionRequest(String accountNumber, BigDecimal amount) {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class TransactionRequest {
+    private String accountNumberOrigin;
+    private String accountNumberDestin;
+    private BigDecimal amount;
 }
